@@ -1,6 +1,7 @@
 import { json } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useEffect, useState } from 'react'
+import { FaBook, FaRegCalendar } from 'react-icons/fa'
 import { Question } from 'src/utils/types/question'
 import { Room } from 'src/utils/types/room'
 
@@ -37,7 +38,7 @@ export default function Page () {
 	useEffect(() => {
 		setTimeout(() => {
 			setWaiting(false)
-		}, 5000)
+		}, 0)
 	}, [])
 
 	if (isWaiting) {
@@ -57,27 +58,60 @@ export default function Page () {
 
 				</div>
 			</nav>
-			<div className="container flex mx-auto gap-4">
-				<div className='flex flex-col gap-2'>
-					{ questions.map((question, index) => <div className='cursor-pointer w-12 text-xl font-bold h-12 flex items-center justify-center bg-slate-800 rounded-md' key={question.id} onClick={() => setSelectedId(question.id)}>{ index + 1 }</div>) }
-				</div>
-				<div className="flex flex-col items-start gap-4 w-full">
-					<h1 className="text-2xl">
-                        Question:
+			<div className="container flex items-start mx-auto gap-4">
+				<div className='px-8 py-4 flex flex-col gap-8 w-1/4 bg-slate-800 rounded-md'>
+					<h1 className='font-bold'>
+						Quizz
 					</h1>
-					<hr className="w-full opacity-30" />
-					{ question && <>
-						<h2 className='text-xl font-bold'>
-							{question.title }
+					<div className='flex gap-4 px-2 items-center'>
+						<div className='h-12 w-12 rounded-lg flex items-center justify-center bg-slate-600'>
+							<FaBook size={16} />
+						</div>
+						<h2 className='flex-1'>
+							{ room.name }
 						</h2>
-						<div className='grid grid-cols-4 gap-4 w-full'>
+					</div>
+					<div className='flex flex-col gap-4'>
+						<h1 className='font-bold'>
+						Questions
+						</h1>
+						{ questions.map((question, index) => {
+							return <div className='cursor-pointer flex gap-4 px-2 items-center' onClick={() => setSelectedId(question.id)} key={question.id}>
+								<div className={`h-12 w-12 rounded-lg flex items-center justify-center bg-slate-600 border ${ question.id === selectedId ? 'border-white' : 'border-slate-600' }`}>
+									<FaRegCalendar size={16} />								
+								</div>
+								<h2 className='flex-1'>
+									<b>{index + 1}.</b> { question.title }
+								</h2>
+							</div>
+					
+						}) }
+					</div>
+					
+				</div>
+				<div className="relative flex flex-col items-center gap-4 w-2/4 px-8 py-4 bg-slate-800 rounded-md pt-44 mt-32">
+					{ question && <>
+						{question.title.length % 2 === 0 
+							?  <img className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3' src="/img/question.png" alt="" />
+							: 						<img className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3' src="/img/nerd.png" alt="" />
+						}
+						<div className='w-full flex text-2xl gap-4'>
+							<span className='font-bold'>
+								1.
+							</span>
+							<h2 className='font-bold'>
+								{question.title }
+							</h2>
+						</div>
+						
+						<div className='grid grid-cols-1 gap-4 w-full'>
 							{ question.answers.map((answer) => {
 								return <div onClick={() => {
 									question.selectedOne = answer
 									setQuestions([
 										...questions
 									])
-								} } className={`bg-slate-800 border ${ answer === question.selectedOne ? 'border-white' :   'border-slate-800'} rounded-lg px-4 py-2 cursor-pointer`} key={answer}>
+								} } className={`bg-slate-600 border ${ answer === question.selectedOne ? 'border-white' :   'border-slate-600'} rounded-lg px-4 py-2 cursor-pointer`} key={answer}>
 									{ answer}
 								</div>
 							})}

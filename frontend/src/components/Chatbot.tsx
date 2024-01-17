@@ -9,17 +9,17 @@ export interface Message {
 	userId: string
 }
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-	const connectedUserId = JSON.parse(localStorage.getItem("userId") as string)
+//export const loader = async ({ request }: LoaderFunctionArgs) => {
+	//const connectedUserId = JSON.parse(localStorage.getItem("userId") as string)
 
-	return defer({
-		connectedUserId
-	})
-}
+	//return defer({
+		//connectedUserId
+	//})
+//}
 
 
 export const Chatbot = () => {
-	const { connectedUserId } = useLoaderData<typeof loader>()
+	//const { connectedUserId } = useLoaderData<typeof loader>()
 
     const [ messages, setMessages ] = useState<Message[]>([])
     const [ botMessage, setBotMessage ] = useState('')

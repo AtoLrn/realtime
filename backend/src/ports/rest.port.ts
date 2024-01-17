@@ -47,7 +47,7 @@ export class ExpressRestPort implements ExpressRestPortInterface {
             try {
                 res.send(JSON.stringify(await this.usersUseCase.createUser(req.body as UsersUseCase.Create)))   
             } catch (e) {
-                res.status(400).send(e.message)
+                res.status(400).send(JSON.stringify(e.message))
             }
         })
 
@@ -55,7 +55,7 @@ export class ExpressRestPort implements ExpressRestPortInterface {
             try {
                 res.send(JSON.stringify(await this.usersUseCase.loginUser(req.body as UsersUseCase.Login)))   
             } catch (e) {
-                res.status(400).send(e.message)
+                res.status(400).send(JSON.stringify(e.message))
             }
         })
        

@@ -5,7 +5,6 @@ import { User } from "../entities/user.entity";
 import { PasswordService } from "../services/password.services";
 import { JsonWebTokenService } from "../services/jwt.services";
 
-
 export interface IUsersUseCase {
     createUser(props: UsersUseCase.Create): Promise<User>
     loginUser(props: UsersUseCase.Login): Promise<string>

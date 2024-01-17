@@ -1,4 +1,4 @@
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import { User } from "../entities/user.entity";
 import { prisma } from "../database";
 
@@ -12,7 +12,7 @@ export interface IUserRepository {
 @injectable()
 export class UserRepository implements IUserRepository {
     async createUser(email: string, password: string): Promise<User> {
-        const user = new User(email, password)
+        const user = new User(email, password, false)
 
         const dbUser = await prisma.user.create({
             data: {

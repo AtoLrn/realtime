@@ -1,4 +1,5 @@
 import { json } from '@remix-run/node'
+import { Chatbot } from 'src/components/Chatbot'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { FaBook, FaRegCalendar } from 'react-icons/fa'
@@ -41,11 +42,11 @@ export default function Page () {
 		}, 0)
 	}, [])
 
-	if (isWaiting) {
-		return <main className='flex flex-col justify-center items-center min-h-screen min-w-full bg-slate-900 text-white gap-4'>
-			<h1 className='font-bold text-5xl'>Waiting the quizz to start...</h1>
-		</main>
-	}
+    if (isWaiting) {
+        return <main className='flex flex-col justify-center items-center min-h-screen min-w-full bg-slate-900 text-white gap-4'>
+            <h1 className='font-bold text-5xl'>Waiting the quizz to start...</h1>
+        </main>
+    }
 
 	return (
 		<main className='flex flex-col min-h-screen min-w-full bg-slate-900 text-white gap-4'>
@@ -120,6 +121,7 @@ export default function Page () {
 					
 				</div>
 			</div>
+            <Chatbot />
 		</main>
 	) 
 } 

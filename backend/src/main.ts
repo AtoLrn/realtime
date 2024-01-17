@@ -6,4 +6,4 @@ import {  ExpressRestPortInterface } from "./ports/rest.port";
 
 const server = container.get<ExpressRestPortInterface>(TYPES.ExpressRestPort);
 
-server.start(8080)
+server.start(8000)

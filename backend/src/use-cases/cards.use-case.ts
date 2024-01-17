@@ -30,19 +30,19 @@ export class CardsUseCase implements ICardsUseCase {
         return await this.roomRepository.getAll()
     }
 
-    @inject(TYPES.UserRepository) private userRepository: UserRepository;
+    @inject(TYPES.IUserRepository) private userRepository: UserRepository;
     
     public async getAllCards(tag?: string) {
-        const user = await this.userRepository.getUserById('user-1')
+        const user = await this.userRepository.getUserById(1)
     }
 
     public async createCard({ question, answer, tag }: CardsUseCase.Create){
-        const user = await this.userRepository.getUserById('user-1')
+        const user = await this.userRepository.getUserById(1)
 
     }
 
     public async getCardForDate(date: Date = new Date()) {
-        const user = await this.userRepository.getUserById('user-1')
+        const user = await this.userRepository.getUserById(1)
 
         }
 

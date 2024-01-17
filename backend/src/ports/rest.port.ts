@@ -7,6 +7,7 @@ import { TYPES } from '../infrastructure';
 import { IRoomsUseCase } from '../use-cases/channels.use-case';
 import { ISocketPortInterface } from './socket.port';
 import { ICardsUseCase } from "../use-cases/cards.use-case";
+import { IUsersUseCase, UsersUseCase } from "../use-cases/users.use-case";
 
 export interface ExpressRestPortInterface {
     start(port: number): void
@@ -15,6 +16,7 @@ export interface ExpressRestPortInterface {
 @injectable()
 export class ExpressRestPort implements ExpressRestPortInterface {
     @inject(TYPES.ICardsUseCase) private cardsUseCase: ICardsUseCase;
+    @inject(TYPES.IUsersUseCase) private usersUseCase: IUsersUseCase;
     @inject(TYPES.ISocketPortInterface) private socketPort: ISocketPortInterface;
     
     private expressApp: express.Express
@@ -41,7 +43,21 @@ export class ExpressRestPort implements ExpressRestPortInterface {
             })
         })
 
+        this.expressApp.post('/api/register', async (req, res) => {
+            try {
+                res.send(JSON.stringify(await this.usersUseCase.createUser(req.body as UsersUseCase.Create)))   
+            } catch (e) {
+                res.status(400).send(e.message)
+            }
+        })
 
+        this.expressApp.post('/api/login', async (req, res) => {
+            try {
+                res.send(JSON.stringify(await this.usersUseCase.loginUser(req.body as UsersUseCase.Login)))   
+            } catch (e) {
+                res.status(400).send(e.message)
+            }
+        })
        
         this.server.listen(port, () => {
             console.log(`Listening on port: ${port}`)

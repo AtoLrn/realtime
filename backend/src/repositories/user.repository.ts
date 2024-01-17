@@ -1,45 +1,50 @@
 import { inject, injectable } from "inversify";
-import { IUuid } from "../services/uuid.services";
-import { TYPES } from "../infrastructure";
 import { User } from "../entities/user.entity";
+import { prisma } from "../database";
 
-export interface UserRepository {
-    createUser(): Promise<User> | User
+export interface IUserRepository {
+    createUser(email: string, password: string): Promise<User> | User
     getUsers(): Promise<User[]> | User[]
-    getUserById(userId: string): Promise<User> | User 
-    updateUser(user: User): Promise<User> | User
+    getUserById(userId: number): Promise<User> | User 
+    getUserByEmail(email: string): Promise<User> | User 
 }
 
 @injectable()
-export class UserMemoryRepository implements UserRepository {
-    @inject(TYPES.UuidService) private uuidService: IUuid;
-    private users: User[] = []
+export class UserRepository implements IUserRepository {
+    async createUser(email: string, password: string): Promise<User> {
+        const user = new User(email, password)
 
-    public createUser(): User {
-        const id = this.uuidService.generateUuid()
-        const user = new User(id, new Date())
-        this.users.push(user)
-        return user
-    }
-
-    getUsers(): User[] {
-        return this.users
-    }
-
-    getUserById(userId: string): User {
-        const dbUser = this.users.find((user) => user.id === userId)
-
-        if(!dbUser) {
-            const newUser = new User('user-1', new Date())
-            this.users.push(newUser)
-
-            return newUser
-        }
+        const dbUser = await prisma.user.create({
+            data: {
+                email: user.email,
+                password: user.password
+            }
+        })
 
         return dbUser
     }
-    
-    updateUser(user: User): User {
-        return user
+
+    async getUsers(): Promise<User[]> {
+        return await prisma.user.findMany()
+    }
+
+    async getUserById(userId: number): Promise<User> {
+        const dbUser = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
+        return dbUser
+    }
+
+    async getUserByEmail(email: string): Promise<User> {
+        const dbUser = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        })
+
+        return dbUser
     }
 }

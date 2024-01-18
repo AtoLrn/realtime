@@ -17,10 +17,17 @@ export class SocketPortInterface implements ISocketPortInterface {
         this.socketIoServer = new socketIo.Server(server)
 
         this.socketIoServer.on('connection', async (socket) => {
-            const user = await this.channelsService.save(socket)
+            console.log("New user on room")
+            //const user = await this.channelsService.save(socket)
 
-            user.socket.on('join', ({ channelId }: { channelId: string }) => {
-                this.channelsService.join(channelId, user)
+            //user.socket.on('join', ({ channelId }: { channelId: string }) => {
+                //this.channelsService.join(channelId, user)
+            //})
+
+            socket.on("disconnect", async () => console.log("User disconnected"))
+
+            socket.on("chat", async (content) => {
+                console.log(content)
             })
         })
 

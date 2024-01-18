@@ -1,5 +1,5 @@
 import { json } from '@remix-run/node'
-import { Chatbot } from 'src/components/Chatbot'
+import { Chat } from 'src/components/Chat'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { FaBook, FaRegCalendar } from 'react-icons/fa'
@@ -121,7 +121,7 @@ export default function Page () {
 					
 				</div>
 			</div>
-            <Chatbot />
+            <Chat />
 		</main>
 	) 
 } 

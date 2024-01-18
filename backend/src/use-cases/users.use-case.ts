@@ -16,16 +16,22 @@ export class UsersUseCase implements IUsersUseCase {
     @inject(TYPES.IPassword) private passwordService: PasswordService;
     @inject(TYPES.IJsonWebToken) private jsonWebTokenService: JsonWebTokenService;
 
-    async createUser({ email, password }: UsersUseCase.Create): Promise<User> {
-        const existingUser = await this.userRepository.getUserByEmail(email)
+    async createUser({ username, email, password }: UsersUseCase.Create): Promise<User> {
+        const existingUserUsername = await this.userRepository.getUserByUsername(username)
 
-        if (existingUser) {
+        if (existingUserUsername) {
+            throw new Error('User already exist with this username')
+        }
+
+        const existingUserEmail = await this.userRepository.getUserByEmail(email)
+
+        if (existingUserEmail) {
             throw new Error('User already exist with this email')
         }
 
         const hashedPassword = await this.passwordService.encrypt(password)
 
-        const user = await this.userRepository.createUser(email, hashedPassword)
+        const user = await this.userRepository.createUser(username, email, hashedPassword)
 
         return user
     }
@@ -49,12 +55,13 @@ export class UsersUseCase implements IUsersUseCase {
 
 export namespace UsersUseCase {
     export interface Create {
+        username: string
         email: string
-        password: string,
+        password: string
     }
 
     export interface Login {
         email: string
-        password: string,
+        password: string
     }
 }

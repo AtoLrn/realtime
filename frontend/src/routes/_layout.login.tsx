@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
 import { commitSession, getSession } from 'src/core/services/session.service.server'
 
@@ -44,6 +44,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             'Set-Cookie': await commitSession(session),
         }
 	})
+}
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+    const session = await getSession(request.headers.get('Cookie'))
+
+    if (session.has('jwt')) {
+        return redirect('/')
+    }
+
+    return null
 }
 
 export default function Register () {

@@ -1,15 +1,17 @@
-import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
+import {getSession} from 'src/core/services/session.service.server'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const fd = await request.formData()
 
+	const username = fd.get('username')
 	const email = fd.get('email')
 	const password = fd.get('password')
 
-	if (!email || !password) {
+	if (!username || !email || !password) {
 		return json({
-			content: 'You must provide an email and a password'
+			content: 'You must provide an username, email and a password'
 		})
 	}
 
@@ -19,6 +21,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+            username,
             email,
             password
         })
@@ -36,6 +39,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     })
 }
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+    const session = await getSession(request.headers.get('Cookie'))
+
+    if (session.has('jwt')) {
+        return redirect('/')
+    }
+
+    return null
+}
+
 export default function Register () {
 	const data = useActionData<typeof action>()
 
@@ -44,6 +57,10 @@ export default function Register () {
 		{data?.content && <h2>{data.content}!</h2>}
 		<div className='flex items-center flex-col z-20 w-5/6 xl:w-1/2 gap-12 xl:gap-8'>
 			<Form className='flex w-full xl:w-1/2  items-center gap-8 z-20 flex-col' method='POST'>
+				<input 
+					autoComplete='off' name="username" type="text"
+					className='bg-transparent w-full xl:w-4/5 border-2 border-gray-200 text-3xl xl:text-lg outline-none rounded-lg px-4 py-2'
+					placeholder='username' />
 				<input 
 					autoComplete='off' name="email" type="text"
 					className='bg-transparent w-full xl:w-4/5 border-2 border-gray-200 text-3xl xl:text-lg outline-none rounded-lg px-4 py-2'

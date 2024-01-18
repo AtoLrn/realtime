@@ -1,5 +1,5 @@
 import { Socket } from "./socket.entity";
 
 export class User {
-    constructor(public email: string, public password: string, isAdmin: boolean) {}
+    constructor(public username: string, public email: string, public password: string, public isAdmin: boolean) {}
 }

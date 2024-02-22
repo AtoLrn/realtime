@@ -115,7 +115,7 @@ export default function MainPage() {
                                     <hr className='pb-4' />
                                     <div className='pb-4 flex flex-col items-start gap-2'>
                                         <label htmlFor="name" className='uppercase font-bold'>Name :</label>
-                                        <input required name="name" className='resize-y my-4 bg-transparent border-1 border-white w-full' id='name' />
+                                        <input required name="name" className='bg-transparent w-full xl:w-4/5 border-2 border-gray-200 text-3xl xl:text-lg outline-none rounded-lg px-4 py-2' id='name' />
                                     </div>
                                     <div className='flex gap-2 items-center justify-end w-full'>
                                         <Dialog.Close asChild>

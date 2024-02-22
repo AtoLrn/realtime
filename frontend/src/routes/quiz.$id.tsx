@@ -22,13 +22,13 @@ export default function Page () {
 	const [ isWaiting, setWaiting ] = useState(true)
 	const [ questions, setQuestions ] = useState<Question[]>([{
 		id: 'ouga-1',
-		title: 'What is the name of Nairi?',
+		content: 'What is the name of Nairi?',
 		answers: ['Amin', 'Sebastien', 'Emmanuel', 'Samuel', 'Do Flamingo'],
 		selectedOne: 'Amin'
 	},
 	{
 		id: 'ouga-2',
-		title: 'What is the name of OUga?',
+		content: 'What is the name of OUga?',
 		answers: ['Amin', 'Bouga', 'Emmanuel']
 	}] )
 	const [ selectedId, setSelectedId ] = useState<Question['id']>()
@@ -82,7 +82,7 @@ export default function Page () {
 									<FaRegCalendar size={16} />								
 								</div>
 								<h2 className='flex-1'>
-									<b>{index + 1}.</b> { question.title }
+									<b>{index + 1}.</b> { question.content }
 								</h2>
 							</div>
 					
@@ -92,7 +92,7 @@ export default function Page () {
 				</div>
 				<div className="relative flex flex-col items-center gap-4 w-2/4 px-8 py-4 bg-slate-800 rounded-md pt-44 mt-32">
 					{ question && <>
-						{question.title.length % 2 === 0 
+						{question.content.length % 2 === 0 
 							?  <img className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3' src="/img/question.png" alt="" />
 							: 						<img className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3' src="/img/nerd.png" alt="" />
 						}
@@ -101,12 +101,12 @@ export default function Page () {
 								1.
 							</span>
 							<h2 className='font-bold'>
-								{question.title }
+								{question.content}
 							</h2>
 						</div>
 						
 						<div className='grid grid-cols-1 gap-4 w-full'>
-							{ question.answers.map((answer) => {
+							{ question?.answers?.map((answer) => {
 								return <div onClick={() => {
 									question.selectedOne = answer
 									setQuestions([

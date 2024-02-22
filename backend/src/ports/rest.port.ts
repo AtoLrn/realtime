@@ -8,6 +8,8 @@ import { ISocketPortInterface } from './socket.port';
 import { ICardsUseCase } from "../use-cases/cards.use-case";
 import { IUsersUseCase, UsersUseCase } from "../use-cases/users.use-case";
 import {IQuizUseCase, QuizUseCase} from "../use-cases/quiz.use-case";
+import {IQuestionUseCase, QuestionUseCase} from "../use-cases/question.use-case";
+import {AnswerUseCase, IAnswerUseCase} from "../use-cases/answer.use-case";
 
 export interface ExpressRestPortInterface {
     start(port: number): void
@@ -18,6 +20,8 @@ export class ExpressRestPort implements ExpressRestPortInterface {
     @inject(TYPES.ICardsUseCase) private cardsUseCase: ICardsUseCase;
     @inject(TYPES.IUsersUseCase) private usersUseCase: IUsersUseCase;
     @inject(TYPES.IQuizUseCase) private quizUseCase: IQuizUseCase;
+    @inject(TYPES.IQuestionUseCase) private questionUseCase: IQuestionUseCase;
+    @inject(TYPES.IAnswerUseCase) private answerUseCase: IAnswerUseCase;
     @inject(TYPES.ISocketPortInterface) private socketPort: ISocketPortInterface;
     
     private expressApp: express.Express
@@ -81,6 +85,22 @@ export class ExpressRestPort implements ExpressRestPortInterface {
 
             try {
                 res.send(JSON.stringify(await this.quizUseCase.getQuizById(id)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.post('/api/question', async (req, res) => {
+            try {
+                res.send(JSON.stringify(await this.questionUseCase.createQuestion(req.body as QuestionUseCase.Create)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.post('/api/answer', async (req, res) => {
+            try {
+                res.send(JSON.stringify(await this.answerUseCase.createAnswer(req.body as AnswerUseCase.Create)))   
             } catch (e) {
                 res.status(400).send(JSON.stringify(e.message))
             }

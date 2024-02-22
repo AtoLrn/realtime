@@ -30,6 +30,9 @@ export class QuizRepository implements IQuizRepository {
         const dbQuiz = await prisma.quiz.findUnique({
             where: {
                 id: quizId
+            },
+            include: {
+                questions: true
             }
         })
 

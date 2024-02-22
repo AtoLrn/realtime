@@ -1,6 +1,8 @@
+import {Answer} from "./answer";
+
 export interface Question {
     id: string,
-    title: string,
-    answers: string[],
+    content: string,
+    answers?: Answer[],
     selectedOne?: string
 }

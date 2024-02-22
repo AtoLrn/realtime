@@ -19,7 +19,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			error: 'You must provide an email and a password'
 		})
 	}
-    const response = await fetch("http://localhost:8000/api/login", {
+    const response = await fetch(`${process.env.API_URL}/api/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return null
 }
 
-export default function Register () {
+export default function Login () {
 	const data = useActionData<typeof action>()
 
     return <div className="container mt-24 flex mx-auto gap-8 flex-col items-center">

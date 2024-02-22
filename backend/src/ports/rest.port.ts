@@ -4,10 +4,10 @@ import cors from 'cors'
 import socketIo from "socket.io";
 import http from 'http'
 import { TYPES } from '../infrastructure';
-import { IRoomsUseCase } from '../use-cases/channels.use-case';
 import { ISocketPortInterface } from './socket.port';
 import { ICardsUseCase } from "../use-cases/cards.use-case";
 import { IUsersUseCase, UsersUseCase } from "../use-cases/users.use-case";
+import {IQuizUseCase, QuizUseCase} from "../use-cases/quiz.use-case";
 
 export interface ExpressRestPortInterface {
     start(port: number): void
@@ -17,6 +17,7 @@ export interface ExpressRestPortInterface {
 export class ExpressRestPort implements ExpressRestPortInterface {
     @inject(TYPES.ICardsUseCase) private cardsUseCase: ICardsUseCase;
     @inject(TYPES.IUsersUseCase) private usersUseCase: IUsersUseCase;
+    @inject(TYPES.IQuizUseCase) private quizUseCase: IQuizUseCase;
     @inject(TYPES.ISocketPortInterface) private socketPort: ISocketPortInterface;
     
     private expressApp: express.Express
@@ -54,6 +55,32 @@ export class ExpressRestPort implements ExpressRestPortInterface {
         this.expressApp.post('/api/login', async (req, res) => {
             try {
                 res.send(JSON.stringify(await this.usersUseCase.loginUser(req.body as UsersUseCase.Login)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.post('/api/quiz', async (req, res) => {
+            try {
+                res.send(JSON.stringify(await this.quizUseCase.createQuiz(req.body as QuizUseCase.Create)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.get('/api/quiz', async (req, res) => {
+            try {
+                res.send(JSON.stringify(await this.quizUseCase.getAllQuiz()))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.get('/api/quiz/:id', async (req, res) => {
+            const id = parseInt(req.params.id);
+
+            try {
+                res.send(JSON.stringify(await this.quizUseCase.getQuizById(id)))   
             } catch (e) {
                 res.status(400).send(JSON.stringify(e.message))
             }

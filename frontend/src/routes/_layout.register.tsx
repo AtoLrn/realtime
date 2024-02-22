@@ -15,7 +15,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		})
 	}
 
-    const response = await fetch("http://localhost:8000/api/register", {
+    const response = await fetch(`${process.env.API_URL}/api/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -10,12 +10,16 @@ import { ISocketPortInterface, SocketPortInterface } from "./ports/socket.port";
 import { IPassword, PasswordService } from "./services/password.services";
 import { IUsersUseCase, UsersUseCase } from "./use-cases/users.use-case";
 import { IJsonWebToken, JsonWebTokenService } from "./services/jwt.services";
+import { IQuizRepository, QuizRepository } from "./repositories/quiz.repository";
+import { IQuizUseCase, QuizUseCase } from "./use-cases/quiz.use-case";
 
 const container = new Container();
 container.bind<ISocketPortInterface>(TYPES.ISocketPortInterface).to(SocketPortInterface).inSingletonScope();
-container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository).inSingletonScope()
+container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository).inSingletonScope();
+container.bind<IQuizRepository>(TYPES.IQuizRepository).to(QuizRepository).inSingletonScope();
 container.bind<ICardsUseCase>(TYPES.ICardsUseCase).to(CardsUseCase);
 container.bind<IUsersUseCase>(TYPES.IUsersUseCase).to(UsersUseCase);
+container.bind<IQuizUseCase>(TYPES.IQuizUseCase).to(QuizUseCase);
 container.bind<ExpressRestPortInterface>(TYPES.ExpressRestPort).to(ExpressRestPort);
 container.bind<IUuid>(TYPES.UuidService).to(UuidRandomService);
 container.bind<IRoomsUseCase>(TYPES.IRoomsUseCase).to(RoomsUseCase);

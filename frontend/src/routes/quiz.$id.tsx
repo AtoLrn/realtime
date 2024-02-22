@@ -121,7 +121,7 @@ export default function Page () {
 					
 				</div>
 			</div>
-            <Chat />
+            <Chat room={room} />
 		</main>
 	) 
 } 

@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
-import {getSession} from 'src/core/services/session.service.server'
+import { getSession } from 'src/core/services/session.service.server'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const fd = await request.formData()
@@ -15,44 +15,44 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		})
 	}
 
-    const response = await fetch(`${process.env.API_URL}/api/register`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            username,
-            email,
-            password
-        })
-    })
-    const data = await response.json()
+	const response = await fetch(`${process.env.API_URL}/api/register`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			username,
+			email,
+			password
+		})
+	})
+	const data = await response.json()
 
-    if(response.status !== 200) {
+	if(response.status !== 200) {
 		return json({
 			content: data
 		})
-    }
+	}
 
-    return json({
-        content: "Account successfully created, you can now login"
-    })
+	return json({
+		content: 'Account successfully created, you can now login'
+	})
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    const session = await getSession(request.headers.get('Cookie'))
+	const session = await getSession(request.headers.get('Cookie'))
 
-    if (session.has('jwt')) {
-        return redirect('/')
-    }
+	if (session.has('jwt')) {
+		return redirect('/')
+	}
 
-    return null
+	return null
 }
 
 export default function Register () {
 	const data = useActionData<typeof action>()
 
-    return <div className="container mt-24 flex mx-auto gap-8 flex-col items-center">
+	return <div className="container mt-24 flex mx-auto gap-8 flex-col items-center">
 		<h1 className='text-4xl'>Register</h1>
 		{data?.content && <h2>{data.content}!</h2>}
 		<div className='flex items-center flex-col z-20 w-5/6 xl:w-1/2 gap-12 xl:gap-8'>

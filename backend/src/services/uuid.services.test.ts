@@ -2,10 +2,10 @@ import 'reflect-metadata'; // MANDATORY AS WE USE THIS FOR INJECTION
 
 import { container } from "../inversify.config";
 import { TYPES } from '../infrastructure';
-import { IUuid } from './uuid.services';
+import { IUuidService } from './uuid.services';
 
 describe('UuidService', () => {
-  const service = container.get<IUuid>(TYPES.UuidService);
+  const service = container.get<IUuidService>(TYPES.IUuidService);
 
   test('generateUuid', async () => {
       expect(service.generateUuid()).not.toBe('')

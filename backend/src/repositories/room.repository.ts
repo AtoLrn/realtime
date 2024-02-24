@@ -1,6 +1,8 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { Room } from "../entities/room";
 import { Awaitable } from "../utils/awaitable";
+import { TYPES } from "../infrastructure";
+import { IQuizRepository } from "./quiz.repository";
 
 export interface IRoomRepository {
     get(id: string): Awaitable<Room>
@@ -10,6 +12,7 @@ export interface IRoomRepository {
 
 @injectable()
 export class RoomRepository implements IRoomRepository {
+    @inject(TYPES.IQuizRepository) private quizRepository: IQuizRepository;
     rooms: Room[] = []
     
     get(id: string): Awaitable<Room> {
@@ -23,8 +26,8 @@ export class RoomRepository implements IRoomRepository {
         return this.rooms
     }
 
-    save(channel: Room): Awaitable<boolean> {
-        this.rooms.push(channel)
+    save(room: Room): Awaitable<boolean> {
+        this.rooms.push(room)
         return true
     }
 }

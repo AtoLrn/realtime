@@ -1,6 +1,4 @@
-
 export const TYPES = {
-    ICardsUseCase: Symbol.for('ICardsUseCase'),
     IUsersUseCase: Symbol.for('IUsersUseCase'),
     IQuizUseCase: Symbol.for('IQuizUseCase'),
     IQuestionUseCase: Symbol.for('IQuestionUseCase'),
@@ -11,7 +9,7 @@ export const TYPES = {
     IQuestionRepository: Symbol.for('IQuestionRepository'),
     IAnswerRepository: Symbol.for('IAnswerRepository'),
     CardRepository: Symbol.for('CardRepository'),
-    UuidService: Symbol.for('UuidService'),
+    IUuidService: Symbol.for('UuidService'),
     CardService: Symbol.for('CardService'),
     DateService: Symbol.for('DateService'),
     IRoomsUseCase: Symbol.for('IRoomsUseCase'),
@@ -19,4 +17,5 @@ export const TYPES = {
     ISocketPortInterface: Symbol.for('ISocketPortInterface'),
     IPassword: Symbol.for('IPassword'),
     IJsonWebToken: Symbol.for('IJsonWebToken'),
+    ITestRepository: Symbol.for('ITestRepository'),
 }

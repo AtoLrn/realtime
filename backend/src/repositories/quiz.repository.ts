@@ -1,11 +1,12 @@
 import { injectable } from "inversify";
 import { prisma } from "../database";
 import { Quiz } from "../entities/quiz.entity";
+import { Awaitable } from "../utils/awaitable";
 
 export interface IQuizRepository {
-    createQuiz(name: string): Promise<Quiz> | Quiz
-    getQuiz(): Promise<Quiz[]> | Quiz[]
-    getQuizById(quizId: number): Promise<Quiz> | Quiz
+    createQuiz(name: string): Awaitable<Quiz>
+    getQuiz(): Awaitable<Quiz[]> 
+    getQuizById(quizId: number): Awaitable<Quiz>
 }
 
 @injectable()

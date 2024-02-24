@@ -5,11 +5,11 @@ import socketIo from "socket.io";
 import http from 'http'
 import { TYPES } from '../infrastructure';
 import { ISocketPortInterface } from './socket.port';
-import { ICardsUseCase } from "../use-cases/cards.use-case";
 import { IUsersUseCase, UsersUseCase } from "../use-cases/users.use-case";
 import {IQuizUseCase, QuizUseCase} from "../use-cases/quiz.use-case";
 import {IQuestionUseCase, QuestionUseCase} from "../use-cases/question.use-case";
 import {AnswerUseCase, IAnswerUseCase} from "../use-cases/answer.use-case";
+import { IRoomsUseCase } from "../use-cases/channels.use-case";
 
 export interface ExpressRestPortInterface {
     start(port: number): void
@@ -17,12 +17,12 @@ export interface ExpressRestPortInterface {
 
 @injectable()
 export class ExpressRestPort implements ExpressRestPortInterface {
-    @inject(TYPES.ICardsUseCase) private cardsUseCase: ICardsUseCase;
     @inject(TYPES.IUsersUseCase) private usersUseCase: IUsersUseCase;
     @inject(TYPES.IQuizUseCase) private quizUseCase: IQuizUseCase;
     @inject(TYPES.IQuestionUseCase) private questionUseCase: IQuestionUseCase;
     @inject(TYPES.IAnswerUseCase) private answerUseCase: IAnswerUseCase;
     @inject(TYPES.ISocketPortInterface) private socketPort: ISocketPortInterface;
+    @inject(TYPES.IRoomsUseCase) private roomUseCase: IRoomsUseCase;
     
     private expressApp: express.Express
     private socketIoApp: socketIo.Server
@@ -44,7 +44,7 @@ export class ExpressRestPort implements ExpressRestPortInterface {
 
         this.expressApp.get('/api/rooms', async (req, res) => {
             res.send({
-                rooms: await this.cardsUseCase.getRooms()
+                rooms: await this.roomUseCase.getRooms()
             })
         })
 
@@ -67,6 +67,28 @@ export class ExpressRestPort implements ExpressRestPortInterface {
         this.expressApp.post('/api/quiz', async (req, res) => {
             try {
                 res.send(JSON.stringify(await this.quizUseCase.createQuiz(req.body as QuizUseCase.Create)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.post('/api/quiz/start', async (req, res) => {
+            try {
+                res.send(JSON.stringify(await this.quizUseCase.startQuiz(req.body as QuizUseCase.Start)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.post('/api/room/start', async (req, res) => {
+            try {
+                const room = await this.roomUseCase.start(req.body as IRoomsUseCase.Start) 
+
+                setTimeout(() => {
+                    this.socketIoApp.to(room.id).emit('HELLO', 'WORLD')
+                }, 10_000)
+
+                res.send(JSON.stringify(room))   
             } catch (e) {
                 res.status(400).send(JSON.stringify(e.message))
             }

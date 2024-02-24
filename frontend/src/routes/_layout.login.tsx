@@ -3,11 +3,11 @@ import { Form, Link, useActionData } from '@remix-run/react'
 import { commitSession, getSession } from 'src/core/services/session.service.server'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const session = await getSession(request.headers.get('Cookie'))
+	const session = await getSession(request.headers.get('Cookie'))
 
-    if (session.has('jwt')) {
-        return redirect('/')
-    }
+	if (session.has('jwt')) {
+		return redirect('/')
+	}
 
 	const fd = await request.formData()
 
@@ -19,47 +19,47 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			error: 'You must provide an email and a password'
 		})
 	}
-    const response = await fetch(`${process.env.API_URL}/api/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            email,
-            password
-        })
-    })
-    const data = await response.json()
+	const response = await fetch(`${process.env.API_URL}/api/login`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			email,
+			password
+		})
+	})
+	const data = await response.json()
 
-    if(response.status !== 200) {
+	if(response.status !== 200) {
 		return json({
 			error: data
 		})
-    }
+	}
     
-    session.set('jwt', data)
+	session.set('jwt', data)
 
 	return redirect('/', {
-        headers: {
-            'Set-Cookie': await commitSession(session),
-        }
+		headers: {
+			'Set-Cookie': await commitSession(session),
+		}
 	})
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    const session = await getSession(request.headers.get('Cookie'))
+	const session = await getSession(request.headers.get('Cookie'))
 
-    if (session.has('jwt')) {
-        return redirect('/')
-    }
+	if (session.has('jwt')) {
+		return redirect('/')
+	}
 
-    return null
+	return null
 }
 
 export default function Login () {
 	const data = useActionData<typeof action>()
 
-    return <div className="container mt-24 flex mx-auto gap-8 flex-col items-center">
+	return <div className="container mt-24 flex mx-auto gap-8 flex-col items-center">
 		<h1 className='text-4xl'>Login</h1>
 		{data?.error && <h2>{data.error}!</h2>}
 		<div className='flex items-center flex-col z-20 w-5/6 xl:w-1/2 gap-12 xl:gap-8'>

@@ -1,5 +1,4 @@
-import {Question} from "./question.entity";
-import { Socket } from "./socket.entity";
+import { Question } from "./question.entity";
 
 export class Quiz {
     constructor(public name: string, public questions?: Question[]) {}

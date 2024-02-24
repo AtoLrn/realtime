@@ -5,6 +5,7 @@ import {QuestionRepository} from "../repositories/question.repository";
 
 export interface IQuestionUseCase {
     createQuestion(props: QuestionUseCase.Create): Promise<Question>
+    deleteQuestion(id: number): Promise<true>
 }
 
 @injectable()
@@ -15,6 +16,12 @@ export class QuestionUseCase implements IQuestionUseCase {
         const question = await this.questionRepository.createQuestion(content, quizId)
 
         return question
+    }
+
+    async deleteQuestion(id: number): Promise<true> {
+        await this.questionRepository.deleteQuestion(id)
+
+        return true
     }
 }
 

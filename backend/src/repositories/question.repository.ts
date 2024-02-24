@@ -5,6 +5,7 @@ import { Question } from "../entities/question.entity";
 export interface IQuestionRepository {
     createQuestion(content: string, quizId: number): Promise<Question> | Question
     getQuestionById(questionId: number): Promise<Question> | Question
+    deleteQuestion(questionId: number): Promise<true>
 }
 
 @injectable()
@@ -33,5 +34,15 @@ export class QuestionRepository implements IQuestionRepository {
         })
 
         return dbQuestion
+    }
+
+    async deleteQuestion(questionId: number): Promise<true> {
+        await prisma.question.delete({
+            where: {
+                id: questionId 
+            }
+        })
+
+        return true
     }
 }

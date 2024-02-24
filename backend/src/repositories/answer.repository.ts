@@ -5,6 +5,7 @@ import {Answer} from "../entities/answer.entity";
 export interface IAnswerRepository {
     createAnswer(content: string, isRight: boolean, questionId: number): Promise<Answer> | Answer
     getAnswerFromQuestion(questionId: number): Promise<Answer[]>
+    deleteAnswer(answerId: number): Promise<true>
 }
 
 @injectable()
@@ -31,5 +32,15 @@ export class AnswerRepository implements IAnswerRepository {
         })
 
         return dbAnswers
+    }
+
+    async deleteAnswer(answerId: number): Promise<true> {
+        await prisma.answer.delete({
+            where: {
+                id: answerId
+            }
+        })
+
+        return true
     }
 }

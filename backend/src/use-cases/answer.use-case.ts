@@ -5,6 +5,7 @@ import {AnswerRepository} from "../repositories/answer.repository";
 
 export interface IAnswerUseCase {
     createAnswer(props: AnswerUseCase.Create): Promise<Answer>
+    deleteAnswer(id: number): Promise<true>
 }
 
 @injectable()
@@ -15,6 +16,12 @@ export class AnswerUseCase implements IAnswerUseCase {
         const answer = await this.answerRepository.createAnswer(content, isRight, questionId)
 
         return answer
+    }
+
+    async deleteAnswer(id: number): Promise<true> {
+        await this.answerRepository.deleteAnswer(id)
+
+        return true
     }
 }
 

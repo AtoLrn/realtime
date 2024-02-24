@@ -98,9 +98,29 @@ export class ExpressRestPort implements ExpressRestPortInterface {
             }
         })
 
+        this.expressApp.delete('/api/question/:id', async (req, res) => {
+            const id = parseInt(req.params.id)
+
+            try {
+                res.send(JSON.stringify(await this.questionUseCase.deleteQuestion(id)))
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
         this.expressApp.post('/api/answer', async (req, res) => {
             try {
                 res.send(JSON.stringify(await this.answerUseCase.createAnswer(req.body as AnswerUseCase.Create)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.delete('/api/answer/:id', async (req, res) => {
+            const id = parseInt(req.params.id)
+
+            try {
+                res.send(JSON.stringify(await this.answerUseCase.deleteAnswer(id)))
             } catch (e) {
                 res.status(400).send(JSON.stringify(e.message))
             }

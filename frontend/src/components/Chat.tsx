@@ -47,7 +47,7 @@ export const Chat: React.FC<ChatProps> = ({ room }) => {
 				<hr className='w-full' />
 				<div className='flex flex-col gap-2 w-full h-auto'>
 				</div>
-				<Form method='POST' fetcherKey='chat' navigate={false} className='flex w-full gap-2'>
+				<div className='flex w-full gap-2'>
 					<input 
 						autoComplete='off' name="message" type="text"
 						className='bg-transparent w-full border border-gray-200 text-white outline-none rounded-lg px-2 py-1'
@@ -56,7 +56,7 @@ export const Chat: React.FC<ChatProps> = ({ room }) => {
 					<button  className='rounded-md bg-slate-800 px-4 py-1 text-white hover:bg-slate-900 duration-300'>
 					Send
 					</button>
-				</Form>
+				</div>
 			
 			</Popover.Content>
 		</Popover.Portal>

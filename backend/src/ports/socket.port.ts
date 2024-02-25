@@ -18,7 +18,7 @@ export class SocketPortInterface implements ISocketPortInterface {
     start(server: http.Server): socketIo.Server {
         this.socketIoServer = new socketIo.Server(server, {
             cors: {
-                origin: 'http://localhost:3000',
+                origin: '*',
                 methods: [ 'GET', 'POST' ]
             }
         })

@@ -22,16 +22,16 @@ container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository).inSing
 container.bind<IQuizRepository>(TYPES.IQuizRepository).to(QuizRepository).inSingletonScope();
 container.bind<IQuestionRepository>(TYPES.IQuestionRepository).to(QuestionRepository).inSingletonScope();
 container.bind<IAnswerRepository>(TYPES.IAnswerRepository).to(AnswerRepository).inSingletonScope();
-container.bind<IUsersUseCase>(TYPES.IUsersUseCase).to(UsersUseCase);
-container.bind<IQuizUseCase>(TYPES.IQuizUseCase).to(QuizUseCase);
-container.bind<IQuestionUseCase>(TYPES.IQuestionUseCase).to(QuestionUseCase);
-container.bind<IAnswerUseCase>(TYPES.IAnswerUseCase).to(AnswerUseCase);
-container.bind<ExpressRestPortInterface>(TYPES.ExpressRestPort).to(ExpressRestPort);
-container.bind<IUuidService>(TYPES.IUuidService).to(UuidRandomService);
-container.bind<IRoomsUseCase>(TYPES.IRoomsUseCase).to(RoomsUseCase);
-container.bind<IRoomRepository>(TYPES.IRoomRepository).to(RoomRepository);
-container.bind<IPassword>(TYPES.IPassword).to(PasswordService);
-container.bind<IJsonWebToken>(TYPES.IJsonWebToken).to(JsonWebTokenService);
+container.bind<IUsersUseCase>(TYPES.IUsersUseCase).to(UsersUseCase).inSingletonScope();
+container.bind<IQuizUseCase>(TYPES.IQuizUseCase).to(QuizUseCase).inSingletonScope();
+container.bind<IQuestionUseCase>(TYPES.IQuestionUseCase).to(QuestionUseCase).inSingletonScope();
+container.bind<IAnswerUseCase>(TYPES.IAnswerUseCase).to(AnswerUseCase).inSingletonScope();
+container.bind<ExpressRestPortInterface>(TYPES.ExpressRestPort).to(ExpressRestPort).inSingletonScope();
+container.bind<IUuidService>(TYPES.IUuidService).to(UuidRandomService).inSingletonScope();
+container.bind<IRoomsUseCase>(TYPES.IRoomsUseCase).to(RoomsUseCase).inSingletonScope();
+container.bind<IRoomRepository>(TYPES.IRoomRepository).to(RoomRepository).inSingletonScope();
+container.bind<IPassword>(TYPES.IPassword).to(PasswordService).inSingletonScope();
+container.bind<IJsonWebToken>(TYPES.IJsonWebToken).to(JsonWebTokenService).inSingletonScope();
 
 
 export { container };

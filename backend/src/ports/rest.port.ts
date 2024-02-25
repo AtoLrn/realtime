@@ -74,7 +74,7 @@ export class ExpressRestPort implements ExpressRestPortInterface {
 
         this.expressApp.post('/api/quiz/start', async (req, res) => {
             try {
-                res.send(JSON.stringify(await this.quizUseCase.startQuiz(req.body as QuizUseCase.Start)))   
+                res.send(JSON.stringify(await this.quizUseCase.startQuiz(req.body.id as number)))   
             } catch (e) {
                 res.status(400).send(JSON.stringify(e.message))
             }
@@ -82,11 +82,35 @@ export class ExpressRestPort implements ExpressRestPortInterface {
 
         this.expressApp.post('/api/room/start', async (req, res) => {
             try {
-                const room = await this.roomUseCase.start(req.body as IRoomsUseCase.Start) 
+                const room = await this.roomUseCase.start(req.body.roomId as string) 
+
+                this.socketIoApp.to(room.id).emit('start')
+
+                const howManyQuestions = room.quiz.questions.length ?? 0
+
+                if (howManyQuestions === 0) {
+                    res.send(JSON.stringify(room))  
+                    this.roomUseCase.stop(req.body.roomId as string) 
+                    return
+                }
+
+                for (const [i, question] of (room.quiz.questions ?? []).entries()) {
+                    const hiddenQuestioon = {
+                        ...question,
+                        answers: question.answers.map((answer) => ({
+                            id: answer.id,
+                            content: answer.content
+                        }))
+                    }
+                    setTimeout(() => {
+                        this.socketIoApp.to(room.id).emit('question', hiddenQuestioon)
+                    }, 10_000 * i)
+                }
 
                 setTimeout(() => {
-                    this.socketIoApp.to(room.id).emit('HELLO', 'WORLD')
-                }, 10_000)
+                    this.socketIoApp.to(room.id).emit('end', {})
+                    this.roomUseCase.stop(req.body.roomId as string) 
+                }, 10_000 * howManyQuestions)
 
                 res.send(JSON.stringify(room))   
             } catch (e) {
@@ -107,6 +131,16 @@ export class ExpressRestPort implements ExpressRestPortInterface {
 
             try {
                 res.send(JSON.stringify(await this.quizUseCase.getQuizById(id)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.get('/api/room/:id', async (req, res) => {
+            const id = req.params.id;
+
+            try {
+                res.send(JSON.stringify(await this.roomUseCase.getRoomById(id)))   
             } catch (e) {
                 res.status(400).send(JSON.stringify(e.message))
             }

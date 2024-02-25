@@ -33,7 +33,11 @@ export class QuizRepository implements IQuizRepository {
                 id: quizId
             },
             include: {
-                questions: true
+                questions: {
+                    include: {
+                        answers: true
+                    }
+                }
             }
         })
 

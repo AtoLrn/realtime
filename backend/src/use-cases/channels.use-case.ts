@@ -9,8 +9,10 @@ import { Room } from "../entities/room";
 
 export interface IRoomsUseCase {
     getRooms(): Awaitable<Room[]>
+    getRoomById(id: string): Awaitable<Room>
     start(roomId: string): Awaitable<Room>
     canJoin(roomId: string): Awaitable<boolean>
+    stop(roomId: string): Awaitable<Room>
 }
 
 export namespace IRoomsUseCase {
@@ -46,6 +48,10 @@ export class RoomsUseCase implements IRoomsUseCase {
         return this.roomRepository.getAll()
     }
 
+    async getRoomById(id: string): Promise<Room> {
+        return await this.roomRepository.get(id)
+    }
+
     async canJoin(roomId: string): Promise<boolean> {
         const room = await this.roomRepository.get(roomId)
 
@@ -54,6 +60,16 @@ export class RoomsUseCase implements IRoomsUseCase {
 
     async start(roomId: string): Promise<Room> {
         const room = await this.roomRepository.get(roomId)
+
+        room.start()
+
+        return room
+    }
+
+    async stop(roomId: string): Promise<Room> {
+        const room = await this.roomRepository.get(roomId)
+
+        room.stop()
 
         return room
     }

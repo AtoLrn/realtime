@@ -1,8 +1,10 @@
 import { injectable } from "inversify";
 import { prisma } from "../database";
 import { Question } from "../entities/question.entity";
+import { Awaitable } from "../utils/awaitable";
 
 export interface IQuestionRepository {
+    get(answerId: number): Awaitable<Question>
     createQuestion(content: string, quizId: number): Promise<Question> | Question
     getQuestionById(questionId: number): Promise<Question> | Question
     deleteQuestion(questionId: number): Promise<true>
@@ -34,6 +36,14 @@ export class QuestionRepository implements IQuestionRepository {
         })
 
         return dbQuestion
+    }
+
+    async get(questionId: number): Promise<Question> {
+        return await prisma.question.findFirst({
+            where: {
+                id: questionId
+            }
+        })
     }
 
     async deleteQuestion(questionId: number): Promise<true> {

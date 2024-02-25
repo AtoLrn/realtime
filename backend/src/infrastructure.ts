@@ -18,4 +18,5 @@ export const TYPES = {
     IPassword: Symbol.for('IPassword'),
     IJsonWebToken: Symbol.for('IJsonWebToken'),
     ITestRepository: Symbol.for('ITestRepository'),
+    IRoomAnswerRepository: Symbol.for('IRoomAnswerRepository'),
 }

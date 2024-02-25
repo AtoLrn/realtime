@@ -6,6 +6,10 @@ import { TYPES } from "../infrastructure";
 import { IUuidService } from "../services/uuid.services";
 import { IRoomRepository } from "../repositories/room.repository";
 import { Room } from "../entities/room";
+import { RoomAnswer } from "../entities/roomAnswer.entity";
+import { IAnswerRepository } from "../repositories/answer.repository";
+import { IQuestionRepository } from "../repositories/question.repository";
+import { IRoomAnswerRepository } from "../repositories/roomAnswer.repository";
 
 export interface IRoomsUseCase {
     getRooms(): Awaitable<Room[]>
@@ -13,10 +17,23 @@ export interface IRoomsUseCase {
     start(roomId: string): Awaitable<Room>
     canJoin(roomId: string): Awaitable<boolean>
     stop(roomId: string): Awaitable<Room>
+    answer(props: IRoomsUseCase.Answer): Awaitable<RoomAnswer>
+    getAnswers(props: IRoomsUseCase.GetAnswers): Awaitable<RoomAnswer[]>
 }
 
 export namespace IRoomsUseCase {
     export interface Start {
+        roomId: string
+    }
+
+    export interface Answer {
+        roomId: string
+        userId: string
+        questionId: number
+        answerId: number
+    }
+
+    export interface GetAnswers {
         roomId: string
     }
 }
@@ -24,28 +41,30 @@ export namespace IRoomsUseCase {
 @injectable()
 export class RoomsUseCase implements IRoomsUseCase {
     @inject(TYPES.IRoomRepository) private roomRepository: IRoomRepository;
-    @inject(TYPES.IUuidService) private uuidService: IUuidService;
-
-    //save(socket: Socket): Awaitable<User> {
-        //const user = new User(this.uuidService.generateUuid(), socket)
-
-        //return user
-    //}
-
-
-    //async join(channelId: string, user: User): Promise<boolean> {
-        //await this.roomRepository.save(new Room(channelId))
-
-        //const room = await this.roomRepository.get(channelId)
-
-        //user.socket.join(channelId)
-        //room.add(user)
-
-        //return true
-    //}
+    @inject(TYPES.IAnswerRepository) private answerRepository: IAnswerRepository;
+    @inject(TYPES.IQuestionRepository) private questionRepository: IQuestionRepository;
+    @inject(TYPES.IRoomAnswerRepository) private roomAnswerRepository: IRoomAnswerRepository;
 
     getRooms(): Awaitable<Room[]> {
         return this.roomRepository.getAll()
+    }
+
+    async answer({ userId, roomId, questionId, answerId}: IRoomsUseCase.Answer): Promise<RoomAnswer> {
+        const [ room, answer, question ] = await Promise.all([
+            this.roomRepository.get(roomId),
+            this.answerRepository.get(answerId),
+            this.questionRepository.get(questionId)
+        ])
+
+        const roomAnswer = new RoomAnswer(userId, roomId, room.quiz, answer, question)
+
+        await this.roomAnswerRepository.save(roomAnswer)
+
+        return roomAnswer
+    }
+
+    async getAnswers({ roomId }: IRoomsUseCase.GetAnswers): Promise<RoomAnswer[]> {
+        return await this.roomAnswerRepository.getAllByRoomId(roomId)
     }
 
     async getRoomById(id: string): Promise<Room> {

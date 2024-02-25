@@ -1,5 +1,5 @@
-import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
+import { Form, useLoaderData } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { FaBook, FaRegCalendar } from 'react-icons/fa'
 import { io } from 'socket.io-client'
@@ -9,6 +9,30 @@ interface State {
 	isAllowed?: boolean,
 	isConnected: boolean,
 	isStarted: boolean
+}
+
+export const action = async ({ params, request }: ActionFunctionArgs) => {
+	const fd = await request.formData()
+
+	const roomId = params.roomId
+	const answerId = fd.get('answerId')?.toString() ?? ''
+	const questionId = fd.get('questionId')?.toString() ?? ''
+	const userId = fd.get('userId')
+
+	const response = await fetch(`${process.env.API_URL}/api/room/${roomId}/answer`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			answerId: parseInt(answerId),
+			questionId: parseInt(questionId),
+			userId
+		})
+	})
+	const data = await response.json()
+
+	return json({})
 }
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
@@ -45,11 +69,14 @@ export default function Layout () {
 	const [ questions, setQuestions ] = useState<unknown[]>([])
 	const [ currentQuestion, setCurrentquestion ] = useState<unknown>()
 	const [ isFinished, setIsFinished ] = useState(room.status === 'STOPPED')
+	const [ userId, setUserId ] = useState<string>()
+	const [ hasAnswered, setHasAnswered ] = useState(false)
 
 	useEffect(() => {
 		const socket = io(socketUrl)
 
-		socket.on('joined', ({ joined }) => {
+		socket.on('joined', ({ joined, userId }) => {
+			setUserId(userId)
 			setState({
 				isAllowed: joined,
 				isConnected: joined,
@@ -71,13 +98,12 @@ export default function Layout () {
 
 		socket.on('question', (data: unknown) => {
 			setCurrentquestion(data)
+			setHasAnswered(false)
 			setQuestions((current) => [...current, data])
 		})
 
 		socket.emit('joinRoom', { roomId })
 	}, [])
-
-	console.log(questions, currentQuestion)
 	
 	return <div className="container mt-24 flex mx-auto gap-8 flex-col items-center">
 		{ isFinished ? <nav className="w-full mx-auto  py-4 bg-slate-800">
@@ -138,14 +164,20 @@ export default function Layout () {
 									{(currentQuestion as any).content}
 								</h2>
 							</div>
-			
-							<div className='grid grid-cols-1 gap-4 w-full'>
+							{ hasAnswered && <span className='w-full mx-auto  py-4 bg-slate-800'>You have answered to the question</span> }
+
+							{ !hasAnswered && <div className='grid grid-cols-1 gap-4 w-full'>
 								{ (currentQuestion as any).answers?.map((answer) => {
-									return <div className={'bg-slate-600 border border-slate-600 rounded-lg px-4 py-2 cursor-pointer'} key={ answer.content }>
-										{ answer.content }
-									</div>
+									return <Form onSubmit={() => setHasAnswered(true)} method='POST' key={ answer.content }>
+										<input type="hidden" name="answerId" value={answer.id} />
+										<input type="hidden" name="questionId" value={(currentQuestion as any).id} />
+										<input type="hidden" name="userId" value={userId} />
+										<button  className={'bg-slate-600 border border-slate-600 rounded-lg px-4 py-2 cursor-pointer'}>{ answer.content }</button>
+									</Form>
 								})}
 							</div>
+							}
+							
 						</>}
 		
 					</div>

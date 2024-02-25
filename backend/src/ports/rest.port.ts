@@ -38,10 +38,6 @@ export class ExpressRestPort implements ExpressRestPortInterface {
         this.expressApp.use(cors());
         this.expressApp.use(express.json());
 
-        this.expressApp.get("/", async (req, res) => {
-            res.send('YES')
-        });
-
         this.expressApp.get('/api/rooms', async (req, res) => {
             res.send({
                 rooms: await this.roomUseCase.getRooms()
@@ -141,6 +137,38 @@ export class ExpressRestPort implements ExpressRestPortInterface {
 
             try {
                 res.send(JSON.stringify(await this.roomUseCase.getRoomById(id)))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.post('/api/room/:id/answer', async (req, res) => {
+            const roomId = req.params.id;
+            const body = req.body;
+
+            const answer =  await this.roomUseCase.answer({
+                roomId,
+                userId: body.userId,
+                questionId: body.questionId,
+                answerId: body.answerId
+            })
+
+            this.socketIoApp.to(`${roomId}-watch`).emit('answer', answer)
+
+            try {
+                res.send(JSON.stringify(answer))   
+            } catch (e) {
+                res.status(400).send(JSON.stringify(e.message))
+            }
+        })
+
+        this.expressApp.get('/api/room/:id/answer', async (req, res) => {
+            const roomId = req.params.id;
+
+            try {
+                res.send(JSON.stringify(await this.roomUseCase.getAnswers({
+                    roomId,
+                })))   
             } catch (e) {
                 res.status(400).send(JSON.stringify(e.message))
             }

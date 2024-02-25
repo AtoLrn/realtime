@@ -15,6 +15,7 @@ import { IQuestionRepository, QuestionRepository } from "./repositories/question
 import { IQuestionUseCase, QuestionUseCase } from "./use-cases/question.use-case";
 import { AnswerRepository, IAnswerRepository } from "./repositories/answer.repository";
 import { AnswerUseCase, IAnswerUseCase } from "./use-cases/answer.use-case";
+import { IRoomAnswerRepository, RoomAnswerRepository } from "./repositories/roomAnswer.repository";
 
 const container = new Container();
 container.bind<ISocketPortInterface>(TYPES.ISocketPortInterface).to(SocketPortInterface).inSingletonScope();
@@ -32,6 +33,7 @@ container.bind<IRoomsUseCase>(TYPES.IRoomsUseCase).to(RoomsUseCase).inSingletonS
 container.bind<IRoomRepository>(TYPES.IRoomRepository).to(RoomRepository).inSingletonScope();
 container.bind<IPassword>(TYPES.IPassword).to(PasswordService).inSingletonScope();
 container.bind<IJsonWebToken>(TYPES.IJsonWebToken).to(JsonWebTokenService).inSingletonScope();
+container.bind<IRoomAnswerRepository>(TYPES.IRoomAnswerRepository).to(RoomAnswerRepository).inSingletonScope();
 
 
 export { container };

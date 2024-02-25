@@ -6,12 +6,6 @@ COPY . .
 
 RUN npm install
 
-FROM node:20.8 AS dev
-
-WORKDIR /app
-
-ENV NODE_ENV=development
-
 EXPOSE 8000
 
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "npx prisma migrate dev --schema=./src/prisma/schema.prisma && npm run dev"]

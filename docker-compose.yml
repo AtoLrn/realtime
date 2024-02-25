@@ -10,6 +10,25 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: realtime
 
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - 8000:8000
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/database?schema=public
+      JWT_SECRET_KEY: "!Change-Me!"
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 3000:3000
+    environment:
+      API_URL: http://backend:8000
+      SOCKET_URL: ws://backend:8000
+
   adminer:
     image: adminer
     ports:

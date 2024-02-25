@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "nodemon -w src -x tsx src/main.ts",
+    "build": "ts-node ./src/main",
     "test": "jest --collect-coverage",
     "migrate": "prisma migrate"
   },
